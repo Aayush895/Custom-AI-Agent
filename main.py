@@ -13,6 +13,7 @@ def main():
 
     parser = argparse.ArgumentParser(description='Custom AI agent based on Gemini model')
     parser.add_argument('user_prompt', type=str, help='Please provide a prompt by user')
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
 
     messages: list[types.Content] = [
@@ -23,10 +24,11 @@ def main():
 
     if(response.usage_metadata == None): 
         raise RuntimeError('API request has been failed, please check your token limit!')
+    if(args.verbose):
+        print(f"User prompt: {args.user_prompt}")
+        print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     
-    print(f"User Prompt: {args.user_prompt}")
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     print(f"Response: {response.text}")
 
 if __name__ == "__main__":
