@@ -1,6 +1,7 @@
 import os
 import argparse
 from dotenv import load_dotenv
+from google.genai import types
 from utils.fetch_client import fetch_client
 from utils.ai_prompt_response import ai_prompt_response
 
@@ -16,16 +17,20 @@ def main() -> None:
     # fetch the user prompt which is passed as a command line argument
     parser = argparse.ArgumentParser(description="Chatbot")
     parser.add_argument('user_prompt', type=str, help='User prompt')
-    
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+
     args = parser.parse_args()
 
+    messages: list[types.Content] = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)])]
+
     #fetch text based response from gemini client
-    response = ai_prompt_response(client, args.user_prompt)
+    response = ai_prompt_response(client, messages)
     if(response.usage_metadata == None):
         raise RuntimeError('API request failed')
-    
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+    if(args.verbose):
+        print(f"User prompt: {args.user_prompt}")
+        print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     print(response.text)
 
 if __name__ == '__main__': main()
