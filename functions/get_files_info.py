@@ -21,11 +21,11 @@ def get_files_info(working_directory: str, directory: str = ".") -> str:
 
     fileInfo = ''
     for content in fileContentList:
-      str = f"- {content["name"]}: file_size={content["size"]} bytes, is_dir={content["is_dir"]}"
-      fileInfo += str
+      str = f"- {content['name']}: file_size={content['size']} bytes, is_dir={content['is_dir']}"
+      fileInfo += str + "\n"
 
     return fileInfo
-  except RuntimeError:
-    raise RuntimeError('Error: Something went wrong!')
+  except Exception as e:
+    return f"Error: {e}"
   
   
