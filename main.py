@@ -25,6 +25,11 @@ def main() -> None:
 
     #fetch text based response from gemini client
     response = ai_prompt_response(client, messages)
+
+    if(response.function_calls != None):
+        for i in range(len(response.function_calls)):
+            print(f'Calling function: {response.function_calls[i].name}({response.function_calls[i].args})')
+
     if(response.usage_metadata == None):
         raise RuntimeError('API request failed')
     if(args.verbose):
